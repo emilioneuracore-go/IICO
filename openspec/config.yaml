@@ -1,0 +1,219 @@
+schema: spec-driven
+
+context: |
+  IICO: Sistema de gestión para una escuela técnica (Argentina).
+  Módulos previstos (a definir en changes independientes):
+    - Secretaría Académica (prioridad 1): legajos de alumnos, libro matriz,
+      libros de actas de examen, actas de examen, materias previas, pases de
+      estudiantes, y otras tareas administrativas académicas a definir.
+    - Portal de padres/madres: acceso multiusuario, debe funcionar responsive
+      (mobile-first / adaptable a distintos dispositivos).
+    - Departamento de Orientación: la psicóloga y la psicopedagoga consultan
+      información compartida de estudiantes y además llevan registros propios
+      (privados) por profesional.
+  El sistema debe ser multiusuario con roles diferenciados por módulo/perfil.
+  Terminología del dominio (Argentina, nivel secundario/técnico):
+    legajo, libro matriz, libro de actas de examen, materia previa, pase de
+    estudiante.
+
+  Materias con estructura especial (ejemplos reales confirmados, no
+  hipotéticos - cualquier modelo de "materia" debe soportarlos):
+    - UTP (Unidad Técnica Pedagógica): trianual, modalidad "al final del
+      ciclo", compuesta por 3 áreas con docente propio (Dibujo Técnico,
+      Taller, Educación Tecnológica) integradas en una sola acreditación.
+      Escala de calificación cualitativa en 1er y 2do año, cuantitativa
+      recién en el cierre de 3er año.
+    - FAT (Formación en Ambiente de Trabajo): bianual, materia simple (sin
+      áreas).
+    - Proyectos Integrados: dos materias independientes (cada una con su
+      propia acreditación y notas) que comparten solo PARTE de su horario
+      semanal, no toda - a diferencia de UTP, no se fusionan en una sola
+      acreditación, solo comparten franja horaria.
+
+  Change "secretaria-academica" (completo, en planning): capacidades
+    secretaria-academica/{legajos-alumnos,materias,libro-matriz,actas-examen,
+    materias-previas,pases-estudiantes} e identity/access-control.
+    `materias` modela duración (anual/bianual/trianual), modalidad de
+    acreditación (por tramo / al final del ciclo), materias compuestas por
+    áreas y escala de calificación configurable por etapa (ver UTP/FAT
+    arriba). Arquitectura decidida en su design.md: monolito modular
+    Node.js/TypeScript (NestJS) + PostgreSQL/Prisma, un único frontend React
+    responsive para todos los roles, hosting en la nube.
+
+  Change "portal-familias" (en progreso): alcance acordado con la dirección
+  de la escuela para que las familias (madre/padre/tutor) puedan, todas con
+  el mismo nivel de acceso sobre un mismo alumno:
+    - Consultar situación académica: actas de examen, materias previas,
+      habilitación a promoción, y notas periódicas (libreta/boletín
+      trimestral o bimestral) - esta libreta es una capability NUEVA de
+      Secretaría Académica, distinta de actas de examen (que son solo mesas
+      de examen/finales).
+    - Consultar y notificarse de alertas de faltas disciplinarias y
+      sanciones - dominio nuevo "convivencia" (Régimen de Convivencia).
+    - Consultar calendario escolar y comunicados institucionales (de
+      docentes, directivos, secretaría, preceptores) - dominio nuevo
+      "institucional".
+    - Consultar y actualizar (sujeto a validación) datos de contacto propios
+      y del alumno.
+    - Solicitar trámites: certificado de alumno regular (nuevo en Secretaría
+      Académica) y pase de estudiante (extiende
+      secretaria-academica/pases-estudiantes con solicitud iniciada por la
+      familia).
+  Departamento de Orientación queda como próximo change, aún sin detallar.
+
+  Change "integracion-sge" (en progreso): el sistema debe poder importar
+  calificaciones e inasistencias desde el SGE (Sistema de Gestión de
+  Estudiantes) del Ministerio de Educación de la provincia de Córdoba.
+  Decisiones ya tomadas por la dirección:
+    - El SGE entrega los datos vía archivo exportado manualmente (no hay
+      API); alguien de Secretaría lo sube a IICO.
+    - Ante conflicto entre un dato importado del SGE y uno cargado
+      manualmente en IICO para el mismo alumno/materia/fecha, el SGE es la
+      fuente de verdad y reemplaza al dato local.
+  "Inasistencias" no existía como capability hasta este change - se agrega
+  `secretaria-academica/asistencia` como base, ya que la importación
+  necesita un destino donde escribir esos datos.
+
+  Change "departamento-orientacion" (en progreso): Psicóloga y
+  psicopedagoga (rol Orientación) pueden:
+    - Consultar calificaciones, inasistencias, situación disciplinaria y
+      datos de contacto de padres/madres de un alumno (vista de solo
+      lectura sobre capabilities ya existentes).
+    - Llevar registros propios de los alumnos. Decisión de la dirección:
+      estos registros y también las reuniones/actas/informes son
+      COMPARTIDOS dentro de Orientación y con Dirección, pero NUNCA
+      visibles para Secretaría Académica, docentes ni familias.
+    - Enviar comunicados a alumnos y a sus familias (esto sí es visible
+      para la familia - se resolvió sumando a Orientación como emisor
+      autorizado en `institucional/calendario-comunicados`, ya definida en
+      el change `portal-familias`).
+    - Agendar reuniones (con alumno y/o familia) y elaborar actas de esas
+      reuniones e informes generales - la convocatoria a la reunión NO se
+      expone a la familia en el sistema (se avisa por fuera); solo
+      Orientación y Dirección ven la reunión y su acta/informe en IICO.
+    - Recopilar información de convivencia estudiantil y registrar
+      información de grupos de alumnos (agrupamientos de seguimiento,
+      distintos del curso/división formal).
+
+  Change "administracion-matriculacion" (en progreso): primer módulo de
+  Administración. Alcance acotado explícitamente por la dirección (no
+  incluye montos, medios de pago, comprobantes, aranceles ni becas - eso
+  queda para un change futuro si se pide):
+    - Administración puede consultar si un alumno está habilitado para
+      matricularse, cruzando información con el tope de materias
+      adeudadas de `secretaria-academica/materias-previas` (regla ya
+      existente: máximo 3 materias adeudadas).
+    - El sistema bloquea el registro de matriculación de un alumno con más
+      de 3 materias adeudadas.
+    - La matriculación (trámite de Administración) es un registro
+      SEPARADO del libro matriz (`secretaria-academica/libro-matriz`,
+      trámite académico/legal de Secretaría) - decisión confirmada por la
+      dirección, aunque ambos refieren al mismo alumno/período.
+    - El bloqueo de más de 3 materias adeudadas es ABSOLUTO: ni siquiera
+      Dirección puede autorizar una excepción.
+
+  Change "reservas-recursos" (en progreso): módulo de reserva de espacios
+  (aulas especiales, laboratorio, gimnasio, SUM, etc.) y elementos
+  (proyectores, notebooks, herramientas, etc.) de la escuela, para uso de
+  los docentes. Decisiones confirmadas por la dirección:
+    - La reserva se confirma automáticamente si el espacio/elemento está
+      disponible en esa franja horaria - no requiere aprobación de nadie.
+    - El catálogo de espacios/elementos reservables lo administra
+      cualquier cuenta con rol directivo o de Secretaría (no se crea un
+      rol nuevo para esto).
+
+  Change "correo-institucional" (en progreso): al matricular a un alumno
+  (`administracion/matriculacion`) o dar de alta a un docente (cuenta con
+  rol Docente en `identity/access-control`), el sistema debe generar
+  automáticamente una cuenta de correo institucional en Google Workspace
+  (dominio @iico.edu.ar). El usuario de la sesión (Emilio) confirmó que
+  tiene permisos de administrador en la consola de Google para esto, por
+  lo que es una integración real vía API (Google Admin/Directory API), no
+  un trámite manual. Formato de nombre de usuario confirmado por la
+  dirección: `nombreapellido@iico.edu.ar` (nombre y apellido concatenados
+  sin separador, minúscula, sin acentos/ñ). Ante colisión (dos personas
+  con el mismo nombreapellido), se desambigua agregando un número
+  incremental (nombreapellido2, nombreapellido3, ...).
+
+  Change "planificacion-anual" (en progreso): los docentes suben una
+  planificación anual por materia/curso a comienzos de ciclo lectivo.
+  Decisiones confirmadas por la dirección:
+    - Es un FORMULARIO ESTRUCTURADO dentro del sistema (no un archivo
+      subido), con el mismo formato único para todas las materias.
+    - Debe contemplar los Proyectos Integrados: si la materia tiene un
+      Proyecto Integrado vinculado, la planificación necesita una sección
+      para la articulación con la materia vinculada.
+    - Consultable (solo lectura) por: estudiantes (su propio curso),
+      padres/madres (alumno vinculado), Departamento de Orientación,
+      Dirección y Secretaría Académica.
+
+  Change "comunidad-estudiantil" (en progreso): espacio social/gamificado
+  para estudiantes. Decisiones confirmadas por la dirección:
+    - Avatar: opciones PREDEFINIDAS por la escuela (no imagen libre) -
+      elegido por seguridad, evita contenido inapropiado en el avatar. La
+      foto de perfil sí puede ser una imagen subida, pero moderada.
+    - Foro/portal del curso y división: moderación por REPORTE + REVISIÓN
+      MANUAL (preceptor/Orientación/Dirección), no aprobación previa de
+      todo contenido.
+    - Desafíos académicos: los CREA EL DOCENTE (pregunta/trivia/actividad
+      para su materia/curso); el alumno lo resuelve y recibe puntaje.
+    - Tabla de posiciones: ranking de TODOS los alumnos de la escuela por
+      puntaje acumulado de desafíos. Los primeros 10 puestos obtienen
+      "créditos" - por ahora solo reconocimiento simbólico, sin canje
+      definido (se define en un change futuro si se pide).
+
+  Change "asistencia-docente" (en progreso): registro de asistencia de
+  docentes mediante check-in manual desde su dispositivo móvil, gateado
+  por conexión obligatoria a la red institucional de la escuela (no
+  detección pasiva/background, por privacidad y simplicidad - decisión
+  tomada tras discutir el trade-off con la dirección). Escuela de DOBLE
+  TURNO: el check-in es hasta 2 veces por día, uno por turno (mañana y/o
+  tarde), independientes entre sí - un docente puede venir solo a la
+  mañana, solo a la tarde, o ambos. Corrección manual de una asistencia
+  no registrada (el docente olvidó el check-in): a cargo de Secretaría
+  Académica y Dirección.
+
+  Change "licencias-docentes" (en progreso): pedidos de autorización de
+  llegada tarde, retiro anticipado, falta o licencia de personal docente.
+  Decisiones confirmadas por la dirección:
+    - Aprueba/rechaza: DIRECCIÓN (no Secretaría Académica).
+    - Los "tipos de licencia" son por ahora un motivo GENÉRICO de texto
+      libre + adjunto opcional, no un catálogo cerrado con reglas propias
+      del Estatuto del Docente (eso queda para un change futuro si se
+      pide).
+  Se relaciona con `secretaria-academica/asistencia-docente` (una
+  solicitud aprobada explica/justifica lo que se ve en el registro de
+  asistencia de ese turno/día) sin modificar sus requisitos.
+
+  Change "comunidad-docente" (en progreso): espacio social para docentes,
+  espejo de `comunidad-estudiantil` pero para personal. Decisiones
+  confirmadas por la dirección:
+    - Foro de docentes (experiencias, materiales, bibliografía, material
+      audiovisual): mismo esquema de reporte + revisión que el foro de
+      alumnos, pero moderado por DIRECCIÓN (no preceptor/Orientación,
+      porque acá el foro es de personal, no de un curso de alumnos).
+      Alcance: toda la escuela (no por curso/división).
+    - Chats entre docentes: 1 a 1 Y grupales (por ejemplo, por área o
+      Proyecto Integrado).
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
