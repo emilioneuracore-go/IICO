@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-iico}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-iico}
+      POSTGRES_DB: ${POSTGRES_DB:-iico}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-iico}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-iico}:${POSTGRES_PASSWORD:-iico}@db:5432/${POSTGRES_DB:-iico}
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:3000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+  e2e:
+    image: mcr.microsoft.com/playwright:v1.47.0-jammy
+    working_dir: /e2e
+    volumes:
+      - ./e2e:/e2e
+    environment:
+      E2E_BASE_URL: http://frontend:5173
+    depends_on:
+      - frontend
+    profiles:
+      - test
+    command: sh -c "npm install && npx playwright test"
+
+volumes:
+  pgdata:
