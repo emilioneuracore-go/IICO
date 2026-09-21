@@ -12,6 +12,8 @@ e2e/node_modules/
 # Prisma
 backend/node_modules/
 
+*.tsbuildinfo
+
 # OS
 .DS_Store
 Thumbs.db

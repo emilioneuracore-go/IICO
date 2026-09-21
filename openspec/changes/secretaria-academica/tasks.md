@@ -2,35 +2,35 @@
 
 ## 1. Setup del proyecto
 
-- [ ] 1.1 Crear el repositorio backend NestJS + TypeScript (estructura de módulos) y verificar que `npm run start` levanta un servidor vacío sin errores
-- [ ] 1.2 Configurar PostgreSQL + Prisma, definir `schema.prisma` inicial y verificar que `prisma migrate dev` corre sin errores contra una base local/cloud de desarrollo
-- [ ] 1.3 Crear el proyecto frontend (React, responsive) con layout base y verificar que renderiza una pantalla de login en desktop y en un viewport móvil
-- [ ] 1.4 Configurar pipeline mínimo de build/test (lint + test runner) y verificar que corre en CI o localmente con un test de ejemplo en verde
+- [x] 1.1 Crear el repositorio backend NestJS + TypeScript (estructura de módulos) y verificar que `npm run start` levanta un servidor vacío sin errores
+- [x] 1.2 Configurar PostgreSQL + Prisma, definir `schema.prisma` inicial y verificar que `prisma migrate dev` corre sin errores contra una base local/cloud de desarrollo
+- [x] 1.3 Crear el proyecto frontend (React, responsive) con layout base y verificar que renderiza una pantalla de login en desktop y en un viewport móvil
+- [x] 1.4 Configurar pipeline mínimo de build/test (lint + test runner) y verificar que corre en CI o localmente con un test de ejemplo en verde
 
 ## 2. Identity & Access Control (`identity/access-control`)
 
-- [ ] 2.1 Modelar en Prisma las entidades Usuario, Rol y Permiso, y verificar con una migración aplicada exitosamente
-- [ ] 2.2 Implementar autenticación (login con credenciales, emisión de sesión/token) y verificar con un test que credenciales válidas autentican y credenciales inválidas son rechazadas
-- [ ] 2.3 Implementar guard/verificación de rol en los endpoints protegidos y verificar con un test que un usuario sin rol autorizado recibe acceso denegado
-- [ ] 2.4 Implementar alta de nuevos roles sin tocar los roles existentes y verificar con un test que agregar un rol no altera los permisos de los roles ya definidos
-- [ ] 2.5 Implementar registro de auditoría (usuario, acción, fecha/hora) sobre consultas/modificaciones de legajo y verificar que cada acceso queda persistido
+- [x] 2.1 Modelar en Prisma las entidades Usuario, Rol y Permiso, y verificar con una migración aplicada exitosamente
+- [x] 2.2 Implementar autenticación (login con credenciales, emisión de sesión/token) y verificar con un test que credenciales válidas autentican y credenciales inválidas son rechazadas
+- [x] 2.3 Implementar guard/verificación de rol en los endpoints protegidos y verificar con un test que un usuario sin rol autorizado recibe acceso denegado
+- [x] 2.4 Implementar alta de nuevos roles sin tocar los roles existentes y verificar con un test que agregar un rol no altera los permisos de los roles ya definidos
+- [x] 2.5 Implementar registro de auditoría (usuario, acción, fecha/hora) sobre consultas/modificaciones de legajo y verificar que cada acceso queda persistido
 
 ## 3. Materias del plan de estudios (`secretaria-academica/materias`)
 
-- [ ] 3.1 Modelar en Prisma la entidad Materia con duración (anual/bianual/trianual) y modalidad de acreditación (por tramo/al final del ciclo), y verificar con migración aplicada
-- [ ] 3.2 Implementar alta de materia bianual/trianual vinculando sus años intermedios a un único registro de Materia, y verificar con un test que ambos años refieren a la misma materia
-- [ ] 3.3 Implementar la configuración de modalidad de acreditación por materia y verificar con tests los casos "por tramo" y "al final del ciclo"
-- [ ] 3.4 Modelar áreas de una materia compuesta (relación Materia-Área con docente propio) y verificar con un test el alta de UTP con sus tres áreas (Dibujo Técnico, Taller, Educación Tecnológica)
-- [ ] 3.5 Implementar la escala de calificación configurable por etapa (cualitativa en tramos intermedios, cuantitativa en el cierre) y verificar con un test el caso de UTP
-- [ ] 3.6 Modelar el vínculo Materia-Materia para Proyectos Integrados y verificar con un test que ambas materias conservan su acreditación y notas independientes
+- [x] 3.1 Modelar en Prisma la entidad Materia con duración (anual/bianual/trianual) y modalidad de acreditación (por tramo/al final del ciclo), y verificar con migración aplicada
+- [x] 3.2 Implementar alta de materia bianual/trianual vinculando sus años intermedios a un único registro de Materia, y verificar con un test que ambos años refieren a la misma materia
+- [x] 3.3 Implementar la configuración de modalidad de acreditación por materia y verificar con tests los casos "por tramo" y "al final del ciclo"
+- [x] 3.4 Modelar áreas de una materia compuesta (relación Materia-Área con docente propio) y verificar con un test el alta de UTP con sus tres áreas (Dibujo Técnico, Taller, Educación Tecnológica)
+- [x] 3.5 Implementar la escala de calificación configurable por etapa (cualitativa en tramos intermedios, cuantitativa en el cierre) y verificar con un test el caso de UTP
+- [x] 3.6 Modelar el vínculo Materia-Materia para Proyectos Integrados y verificar con un test que ambas materias conservan su acreditación y notas independientes
 
 ## 4. Legajos de alumnos (`secretaria-academica/legajos-alumnos`)
 
-- [ ] 4.1 Modelar en Prisma la entidad Alumno/Legajo con datos personales y de contacto, y verificar con migración aplicada
-- [ ] 4.2 Implementar alta de legajo con validación de datos obligatorios y verificar con tests los casos de alta exitosa y de rechazo por datos faltantes
-- [ ] 4.3 Implementar edición de legajo dejando registro de quién y cuándo modificó, y verificar con un test que el historial de cambio queda registrado
-- [ ] 4.4 Modelar y implementar el alta de responsables/familiares asociados a un alumno, y verificar con un test que un alumno puede tener uno o más responsables
-- [ ] 4.5 Restringir consulta/edición de legajo por rol autorizado y verificar con un test que un usuario sin permiso no puede acceder
+- [x] 4.1 Modelar en Prisma la entidad Alumno/Legajo con datos personales y de contacto, y verificar con migración aplicada
+- [x] 4.2 Implementar alta de legajo con validación de datos obligatorios y verificar con tests los casos de alta exitosa y de rechazo por datos faltantes
+- [x] 4.3 Implementar edición de legajo dejando registro de quién y cuándo modificó, y verificar con un test que el historial de cambio queda registrado
+- [x] 4.4 Modelar y implementar el alta de responsables/familiares asociados a un alumno, y verificar con un test que un alumno puede tener uno o más responsables
+- [x] 4.5 Restringir consulta/edición de legajo por rol autorizado y verificar con un test que un usuario sin permiso no puede acceder
 
 ## 5. Libro matriz (`secretaria-academica/libro-matriz`)
 

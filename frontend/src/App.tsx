@@ -1,10 +1,12 @@
+import { LoginPage } from './pages/LoginPage';
+
 function App() {
-  return (
-    <main>
-      <h1>IICO</h1>
-      <p>Sistema de gestión escuela técnica</p>
-    </main>
-  );
+  const handleLogin = async (email: string, password: string) => {
+    // TODO (task 9.1): conectar con POST /auth/login del backend
+    console.log('login attempt', email, password);
+  };
+
+  return <LoginPage onLogin={handleLogin} />;
 }
 
 export default App;

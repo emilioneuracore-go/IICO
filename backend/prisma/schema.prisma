@@ -7,11 +7,168 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Placeholder: se reemplaza por los modelos reales al implementar
-// el primer change de OpenSpec (ver openspec/changes/secretaria-academica).
-model SystemInfo {
-  id        Int      @id @default(autoincrement())
-  key       String   @unique
-  value     String
-  updatedAt DateTime @updatedAt
+// ---------------------------------------------------------------------------
+// identity/access-control (openspec/changes/secretaria-academica)
+// ---------------------------------------------------------------------------
+
+model Usuario {
+  id           String       @id @default(uuid())
+  email        String       @unique
+  passwordHash String
+  activo       Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  roles        UsuarioRol[]
+  auditorias   RegistroAuditoria[]
+  areasDictadas MateriaArea[]
+}
+
+model Rol {
+  id        String        @id @default(uuid())
+  nombre    String        @unique
+  usuarios  UsuarioRol[]
+  permisos  RolPermiso[]
+}
+
+model UsuarioRol {
+  usuarioId String
+  rolId     String
+  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  rol       Rol     @relation(fields: [rolId], references: [id], onDelete: Cascade)
+
+  @@id([usuarioId, rolId])
+}
+
+model Permiso {
+  id     String       @id @default(uuid())
+  nombre String       @unique
+  roles  RolPermiso[]
+}
+
+model RolPermiso {
+  rolId     String
+  permisoId String
+  rol       Rol     @relation(fields: [rolId], references: [id], onDelete: Cascade)
+  permiso   Permiso @relation(fields: [permisoId], references: [id], onDelete: Cascade)
+
+  @@id([rolId, permisoId])
+}
+
+model RegistroAuditoria {
+  id        String   @id @default(uuid())
+  usuarioId String
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  accion    String
+  entidad   String
+  entidadId String
+  fecha     DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// secretaria-academica/materias
+// ---------------------------------------------------------------------------
+
+enum DuracionMateria {
+  ANUAL
+  BIANUAL
+  TRIANUAL
+}
+
+enum ModalidadAcreditacion {
+  POR_TRAMO
+  AL_FINAL_DEL_CICLO
+}
+
+enum EscalaCalificacion {
+  CUALITATIVA
+  CUANTITATIVA
+}
+
+model Materia {
+  id                    String                 @id @default(uuid())
+  nombre                String
+  duracion              DuracionMateria         @default(ANUAL)
+  modalidadAcreditacion ModalidadAcreditacion?
+  escalaEtapaIntermedia EscalaCalificacion?
+  escalaCierre          EscalaCalificacion?
+  areas                 MateriaArea[]
+  vinculosComoA         MateriaVinculo[]        @relation("MateriaVinculoA")
+  vinculosComoB         MateriaVinculo[]        @relation("MateriaVinculoB")
+}
+
+model MateriaArea {
+  id               String   @id @default(uuid())
+  materiaId        String
+  nombre           String
+  docenteUsuarioId String?
+  materia          Materia  @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+  docenteUsuario   Usuario? @relation(fields: [docenteUsuarioId], references: [id])
+
+  @@unique([materiaId, nombre])
+}
+
+// Proyecto Integrado: vínculo entre dos materias independientes, cada una
+// conserva su propia acreditación (ver design.md - Proyecto Integrado como
+// vínculo entre materias, no como fusión).
+model MateriaVinculo {
+  id         String  @id @default(uuid())
+  materiaAId String
+  materiaBId String
+  materiaA   Materia @relation("MateriaVinculoA", fields: [materiaAId], references: [id], onDelete: Cascade)
+  materiaB   Materia @relation("MateriaVinculoB", fields: [materiaBId], references: [id], onDelete: Cascade)
+
+  @@unique([materiaAId, materiaBId])
+}
+
+// ---------------------------------------------------------------------------
+// secretaria-academica/legajos-alumnos
+// ---------------------------------------------------------------------------
+
+enum VinculoResponsable {
+  MADRE
+  PADRE
+  TUTOR
+}
+
+model Alumno {
+  id              String               @id @default(uuid())
+  nombre          String
+  apellido        String
+  documento       String               @unique
+  fechaNacimiento DateTime
+  domicilio       String?
+  telefono        String?
+  activo          Boolean              @default(true)
+  createdAt       DateTime             @default(now())
+  responsables    AlumnoResponsable[]
+  historial       LegajoHistorialCambio[]
+}
+
+model Responsable {
+  id       String              @id @default(uuid())
+  nombre   String
+  apellido String
+  telefono String?
+  email    String?
+  alumnos  AlumnoResponsable[]
+}
+
+model AlumnoResponsable {
+  alumnoId      String
+  responsableId String
+  vinculo       VinculoResponsable
+  alumno        Alumno      @relation(fields: [alumnoId], references: [id], onDelete: Cascade)
+  responsable   Responsable @relation(fields: [responsableId], references: [id], onDelete: Cascade)
+
+  @@id([alumnoId, responsableId])
+}
+
+model LegajoHistorialCambio {
+  id            String   @id @default(uuid())
+  alumnoId      String
+  usuarioId     String
+  campo         String
+  valorAnterior String?
+  valorNuevo    String?
+  fecha         DateTime @default(now())
+  alumno        Alumno   @relation(fields: [alumnoId], references: [id], onDelete: Cascade)
 }
