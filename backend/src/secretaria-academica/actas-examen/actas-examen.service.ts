@@ -175,4 +175,11 @@ export class ActasExamenService {
       orderBy: { fecha: 'asc' },
     });
   }
+
+  obtenerActa(actaId: string) {
+    return this.prisma.acta.findUniqueOrThrow({
+      where: { id: actaId },
+      include: { materia: true, alumnos: true },
+    });
+  }
 }

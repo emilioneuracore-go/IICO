@@ -50,14 +50,14 @@
 
 ## 7. Materias previas (`secretaria-academica/materias-previas`)
 
-- [ ] 7.1 Modelar en Prisma Materia Adeudada y Plan de Acompañamiento, y verificar con migración aplicada
-- [ ] 7.2 Implementar el alta automática de materia adeudada cuando un acta marca una materia como no acreditada, y verificar con un test integrado con el módulo de actas
-- [ ] 7.3 Implementar el registro de materia adeudada por tramo específico para materias plurianuales "por tramo", y verificar con un test que no acreditar un año no bloquea cursar el siguiente
-- [ ] 7.4 Implementar que los años intermedios de una materia "al final del ciclo" no generen materia adeudada, y verificar con un test sobre un año intermedio no acreditado aún
-- [ ] 7.5 Modelar la tabla de configuración de normativa (tope de materias, condiciones de excepción) y verificar que un cambio de configuración se aplica sin deploy de código
-- [ ] 7.6 Implementar el cálculo de habilitación a promoción según el tope configurado, y verificar con tests los casos dentro y fuera del tope
-- [ ] 7.7 Implementar la exigencia de plan de acompañamiento al registrar la tercera materia adeudada, y verificar con un test que el registro queda incompleto sin el plan asociado
-- [ ] 7.8 Implementar la baja de materia adeudada cuando se acredita, y verificar con un test integrado con el módulo de actas
+- [x] 7.1 Modelar en Prisma Materia Adeudada y Plan de Acompañamiento, y verificar con migración aplicada
+- [x] 7.2 Implementar el alta automática de materia adeudada cuando un acta marca una materia como no acreditada, y verificar con un test integrado con el módulo de actas
+- [x] 7.3 Implementar el registro de materia adeudada por tramo específico para materias plurianuales "por tramo", y verificar con un test que no acreditar un año no bloquea cursar el siguiente
+- [x] 7.4 Implementar que los años intermedios de una materia "al final del ciclo" no generen materia adeudada, y verificar con un test sobre un año intermedio no acreditado aún
+- [x] 7.5 Modelar la tabla de configuración de normativa (tope de materias, condiciones de excepción) y verificar que un cambio de configuración se aplica sin deploy de código
+- [x] 7.6 Implementar el cálculo de habilitación a promoción según el tope configurado, y verificar con tests los casos dentro y fuera del tope
+- [x] 7.7 Implementar la exigencia de plan de acompañamiento al registrar la tercera materia adeudada, y verificar con un test que el registro queda incompleto sin el plan asociado
+- [x] 7.8 Implementar la baja de materia adeudada cuando se acredita, y verificar con un test integrado con el módulo de actas
 
 ## 8. Pases de estudiantes (`secretaria-academica/pases-estudiantes`)
 
