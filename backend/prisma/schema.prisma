@@ -21,6 +21,7 @@ model Usuario {
   auditorias   RegistroAuditoria[]
   areasDictadas MateriaArea[]
   actasEvaluadas ActaDocente[]
+  planesAcompanamiento PlanAcompanamiento[]
 }
 
 model Rol {
@@ -96,6 +97,7 @@ model Materia {
   vinculosComoB         MateriaVinculo[]        @relation("MateriaVinculoB")
   actas                 Acta[]
   cursadas              CursadaMateria[]
+  materiasAdeudadas     MateriaAdeudada[]
 }
 
 model MateriaArea {
@@ -147,6 +149,7 @@ model Alumno {
   inscripcionesLibroMatriz InscripcionLibroMatriz[]
   actas           ActaAlumno[]
   cursadas        CursadaMateria[]
+  materiasAdeudadas MateriaAdeudada[]
 }
 
 model Responsable {
@@ -246,6 +249,7 @@ model Acta {
   materia      Materia       @relation(fields: [materiaId], references: [id])
   docentes     ActaDocente[]
   alumnos      ActaAlumno[]
+  materiasAdeudadasOrigen MateriaAdeudada[]
 }
 
 model ActaDocente {
@@ -284,4 +288,50 @@ model CursadaMateria {
   materia   Materia  @relation(fields: [materiaId], references: [id])
 
   @@unique([alumnoId, materiaId, anio])
+}
+
+// ---------------------------------------------------------------------------
+// secretaria-academica/materias-previas
+// ---------------------------------------------------------------------------
+
+enum EstadoMateriaAdeudada {
+  ACTIVA
+  ACREDITADA
+}
+
+model MateriaAdeudada {
+  id                 String                 @id @default(uuid())
+  alumnoId           String
+  materiaId          String
+  // Año del ciclo adeudado; solo tiene valor para materias plurianuales
+  // "por tramo" (ver actas-examen.Acta.tramoAnio, del que se copia).
+  tramoAnio          Int?
+  estado             EstadoMateriaAdeudada  @default(ACTIVA)
+  actaOrigenId        String
+  createdAt          DateTime               @default(now())
+  acreditadaAt       DateTime?
+  alumno             Alumno                 @relation(fields: [alumnoId], references: [id])
+  materia            Materia                @relation(fields: [materiaId], references: [id])
+  actaOrigen         Acta                   @relation(fields: [actaOrigenId], references: [id])
+  planAcompanamiento PlanAcompanamiento?
+}
+
+model PlanAcompanamiento {
+  id                   String          @id @default(uuid())
+  materiaAdeudadaId    String          @unique
+  docenteResponsableId String
+  modalidad            String
+  createdAt            DateTime        @default(now())
+  materiaAdeudada      MateriaAdeudada @relation(fields: [materiaAdeudadaId], references: [id], onDelete: Cascade)
+  docenteResponsable   Usuario         @relation(fields: [docenteResponsableId], references: [id])
+}
+
+// Configuración de la normativa de acreditación (ej. tope de materias
+// adeudadas) como tabla clave/valor editable, no como constante en código
+// (ver design.md - Parametrización de reglas normativas).
+model ConfiguracionAcreditacion {
+  id        String   @id @default(uuid())
+  clave     String   @unique
+  valor     String
+  updatedAt DateTime @updatedAt
 }
