@@ -22,10 +22,14 @@ describe('LegajosAlumnosController (e2e)', () => {
     await prisma.responsable.deleteMany({});
     await prisma.alumno.deleteMany({ where: { documento: { startsWith: 'TEST-' } } });
     const usuarios = await prisma.usuario.findMany({ where: { email: { contains: '@legajos-test.local' } } });
-    await prisma.registroAuditoria.deleteMany({ where: { usuarioId: { in: usuarios.map((u) => u.id) } } });
-    await prisma.usuarioRol.deleteMany({});
+    const usuarioIds = usuarios.map((u) => u.id);
+    await prisma.registroAuditoria.deleteMany({ where: { usuarioId: { in: usuarioIds } } });
+    // No se borran las filas de Rol ('SecretariaAcademica', 'Familia'): son
+    // nombres de rol reales y compartidos (no exclusivos de este test), y
+    // borrarlas en cascada arrastra el UsuarioRol de cualquier otro usuario
+    // del sistema que tenga ese rol.
+    await prisma.usuarioRol.deleteMany({ where: { usuarioId: { in: usuarioIds } } });
     await prisma.usuario.deleteMany({ where: { email: { contains: '@legajos-test.local' } } });
-    await prisma.rol.deleteMany({ where: { nombre: { in: ['SecretariaAcademica', 'Familia'] } } });
     await app.close();
   });
 
