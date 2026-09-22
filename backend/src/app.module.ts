@@ -6,6 +6,7 @@ import { IdentityModule } from './identity/identity.module';
 import { MateriasModule } from './secretaria-academica/materias/materias.module';
 import { LegajosAlumnosModule } from './secretaria-academica/legajos-alumnos/legajos-alumnos.module';
 import { LibroMatrizModule } from './secretaria-academica/libro-matriz/libro-matriz.module';
+import { ActasExamenModule } from './secretaria-academica/actas-examen/actas-examen.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { LibroMatrizModule } from './secretaria-academica/libro-matriz/libro-mat
     MateriasModule,
     LegajosAlumnosModule,
     LibroMatrizModule,
+    ActasExamenModule,
   ],
   controllers: [AppController],
   providers: [],
