@@ -68,9 +68,9 @@
 
 ## 9. Frontend por capability
 
-- [ ] 9.1 Implementar pantalla de login conectada a Identity & Access Control y verificar manualmente el flujo de inicio de sesión exitoso y fallido
-- [ ] 9.2 Implementar las pantallas de alta/consulta de legajo, libro matriz, materias, actas de examen, materias previas y pases, y verificar manualmente cada flujo end-to-end en desktop y en viewport móvil
-- [ ] 9.3 Adaptar la navegación para mostrar solo las secciones habilitadas según el rol del usuario autenticado, y verificar manualmente con al menos dos roles distintos
+- [x] 9.1 Implementar pantalla de login conectada a Identity & Access Control y verificar manualmente el flujo de inicio de sesión exitoso y fallido
+- [x] 9.2 Implementar las pantallas de alta/consulta de legajo, libro matriz, materias, actas de examen, materias previas y pases, y verificar manualmente cada flujo end-to-end en desktop y en viewport móvil
+- [x] 9.3 Adaptar la navegación para mostrar solo las secciones habilitadas según el rol del usuario autenticado, y verificar manualmente con al menos dos roles distintos
 
 ## 10. Verificación integral
 

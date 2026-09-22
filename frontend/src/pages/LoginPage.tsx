@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react';
+import { ApiError } from '../api/client';
 
 interface LoginPageProps {
   onLogin: (email: string, password: string) => Promise<void> | void;
@@ -14,8 +15,8 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     setError(null);
     try {
       await onLogin(email, password);
-    } catch {
-      setError('Credenciales inválidas');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Credenciales inválidas');
     }
   };
 
