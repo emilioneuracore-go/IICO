@@ -30,6 +30,11 @@ describe('MateriasPreviasService', () => {
     actasExamenService = new ActasExamenService(prisma);
     service = new MateriasPreviasService(prisma, actasExamenService);
 
+    // El tope es configuración compartida (no aislada por test): la limpiamos
+    // antes de correr para que el suite no dependa de qué haya quedado
+    // configurado por una corrida anterior o por uso manual del sistema.
+    await prisma.configuracionAcreditacion.deleteMany({ where: { clave: 'TOPE_MATERIAS_ADEUDADAS' } });
+
     docente = await prisma.usuario.create({
       data: { email: 'docente@previas-test.local', passwordHash: 'x' },
     });
