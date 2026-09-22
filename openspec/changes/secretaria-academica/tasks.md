@@ -74,5 +74,5 @@
 
 ## 10. Verificación integral
 
-- [ ] 10.1 Ejecutar la suite completa de tests automatizados de este change y verificar que todos pasan
-- [ ] 10.2 Validar los artefactos de OpenSpec con `openspec validate --strict` para este change y verificar que no reporta errores
+- [x] 10.1 Ejecutar la suite completa de tests automatizados de este change y verificar que todos pasan
+- [x] 10.2 Validar los artefactos de OpenSpec con `openspec validate --strict` para este change y verificar que no reporta errores
