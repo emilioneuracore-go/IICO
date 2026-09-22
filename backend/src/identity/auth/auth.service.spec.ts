@@ -15,7 +15,7 @@ describe('AuthService', () => {
   });
 
   afterEach(async () => {
-    await prisma.usuarioRol.deleteMany({});
+    await prisma.usuarioRol.deleteMany({ where: { usuario: { email: { contains: '@auth-test.local' } } } });
     await prisma.usuario.deleteMany({ where: { email: { contains: '@auth-test.local' } } });
     await prisma.rol.deleteMany({ where: { nombre: { startsWith: 'TestRol' } } });
   });
