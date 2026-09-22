@@ -61,10 +61,10 @@
 
 ## 8. Pases de estudiantes (`secretaria-academica/pases-estudiantes`)
 
-- [ ] 8.1 Modelar en Prisma Pase de Estudiante (tipo ingreso/egreso, institución origen/destino, estado) y verificar con migración aplicada
-- [ ] 8.2 Implementar registro de pase de ingreso, creando o vinculando el legajo del alumno, y verificar con un test el caso completo
-- [ ] 8.3 Implementar registro de pase de egreso con generación de documentación de pase, y verificar con un test que se genera la documentación esperada
-- [ ] 8.4 Implementar el seguimiento de estado del pase (pendiente/en proceso/completo) y verificar con un test la consulta de estado
+- [x] 8.1 Modelar en Prisma Pase de Estudiante (tipo ingreso/egreso, institución origen/destino, estado) y verificar con migración aplicada
+- [x] 8.2 Implementar registro de pase de ingreso, creando o vinculando el legajo del alumno, y verificar con un test el caso completo
+- [x] 8.3 Implementar registro de pase de egreso con generación de documentación de pase, y verificar con un test que se genera la documentación esperada
+- [x] 8.4 Implementar el seguimiento de estado del pase (pendiente/en proceso/completo) y verificar con un test la consulta de estado
 
 ## 9. Frontend por capability
 

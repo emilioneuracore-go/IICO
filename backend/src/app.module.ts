@@ -8,6 +8,7 @@ import { LegajosAlumnosModule } from './secretaria-academica/legajos-alumnos/leg
 import { LibroMatrizModule } from './secretaria-academica/libro-matriz/libro-matriz.module';
 import { ActasExamenModule } from './secretaria-academica/actas-examen/actas-examen.module';
 import { MateriasPreviasModule } from './secretaria-academica/materias-previas/materias-previas.module';
+import { PasesEstudiantesModule } from './secretaria-academica/pases-estudiantes/pases-estudiantes.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { MateriasPreviasModule } from './secretaria-academica/materias-previas/m
     LibroMatrizModule,
     ActasExamenModule,
     MateriasPreviasModule,
+    PasesEstudiantesModule,
   ],
   controllers: [AppController],
   providers: [],
