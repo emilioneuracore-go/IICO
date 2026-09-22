@@ -150,6 +150,7 @@ model Alumno {
   actas           ActaAlumno[]
   cursadas        CursadaMateria[]
   materiasAdeudadas MateriaAdeudada[]
+  pases           PaseEstudiante[]
 }
 
 model Responsable {
@@ -334,4 +335,33 @@ model ConfiguracionAcreditacion {
   clave     String   @unique
   valor     String
   updatedAt DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// secretaria-academica/pases-estudiantes
+// ---------------------------------------------------------------------------
+
+enum TipoPase {
+  INGRESO
+  EGRESO
+}
+
+enum EstadoPase {
+  PENDIENTE
+  EN_PROCESO
+  COMPLETO
+}
+
+model PaseEstudiante {
+  id                  String     @id @default(uuid())
+  tipo                TipoPase
+  alumnoId            String
+  institucionOrigen   String?
+  institucionDestino  String?
+  documentacionOrigen String?
+  documentacionPase   String?
+  estado              EstadoPase @default(PENDIENTE)
+  createdAt           DateTime   @default(now())
+  completadoAt        DateTime?
+  alumno              Alumno     @relation(fields: [alumnoId], references: [id])
 }
