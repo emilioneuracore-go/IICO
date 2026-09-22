@@ -20,6 +20,7 @@ model Usuario {
   roles        UsuarioRol[]
   auditorias   RegistroAuditoria[]
   areasDictadas MateriaArea[]
+  actasEvaluadas ActaDocente[]
 }
 
 model Rol {
@@ -93,6 +94,8 @@ model Materia {
   areas                 MateriaArea[]
   vinculosComoA         MateriaVinculo[]        @relation("MateriaVinculoA")
   vinculosComoB         MateriaVinculo[]        @relation("MateriaVinculoB")
+  actas                 Acta[]
+  cursadas              CursadaMateria[]
 }
 
 model MateriaArea {
@@ -142,6 +145,8 @@ model Alumno {
   responsables    AlumnoResponsable[]
   historial       LegajoHistorialCambio[]
   inscripcionesLibroMatriz InscripcionLibroMatriz[]
+  actas           ActaAlumno[]
+  cursadas        CursadaMateria[]
 }
 
 model Responsable {
@@ -194,4 +199,89 @@ model InscripcionLibroMatriz {
   alumno              Alumno   @relation(fields: [alumnoId], references: [id])
 
   @@unique([libro, anio, numeroCorrelativo])
+}
+
+// ---------------------------------------------------------------------------
+// secretaria-academica/actas-examen
+// ---------------------------------------------------------------------------
+
+enum AlcanceActa {
+  TRAMO
+  CICLO_COMPLETO
+}
+
+enum EstadoActa {
+  ABIERTA
+  CERRADA
+}
+
+enum ResultadoActaAlumno {
+  APROBADO
+  DESAPROBADO
+}
+
+model LibroActas {
+  id        String   @id @default(uuid())
+  nombre    String
+  anio      Int
+  createdAt DateTime @default(now())
+  actas     Acta[]
+
+  @@unique([nombre, anio])
+}
+
+model Acta {
+  id           String        @id @default(uuid())
+  libroActasId String
+  materiaId    String
+  fecha        DateTime
+  alcance      AlcanceActa
+  // Año del ciclo evaluado (1..duración de la materia); solo tiene valor
+  // cuando alcance = TRAMO. En CICLO_COMPLETO el acta evalúa todos los años.
+  tramoAnio    Int?
+  estado       EstadoActa    @default(ABIERTA)
+  createdAt    DateTime      @default(now())
+  cerradaAt    DateTime?
+  libroActas   LibroActas    @relation(fields: [libroActasId], references: [id])
+  materia      Materia       @relation(fields: [materiaId], references: [id])
+  docentes     ActaDocente[]
+  alumnos      ActaAlumno[]
+}
+
+model ActaDocente {
+  actaId    String
+  usuarioId String
+  acta      Acta    @relation(fields: [actaId], references: [id], onDelete: Cascade)
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@id([actaId, usuarioId])
+}
+
+model ActaAlumno {
+  id        String               @id @default(uuid())
+  actaId    String
+  alumnoId  String
+  nota      Int?
+  resultado ResultadoActaAlumno?
+  acta      Acta                 @relation(fields: [actaId], references: [id], onDelete: Cascade)
+  alumno    Alumno               @relation(fields: [alumnoId], references: [id])
+
+  @@unique([actaId, alumnoId])
+}
+
+// Registra que un alumno cursó un año determinado del ciclo de una materia
+// plurianual. Es lo único que permite validar, para una materia "al final
+// del ciclo", que el alumno cursó todos los años antes de admitir su acta
+// de cierre (ver design.md - materias/spec.md, no existe otro módulo de
+// cursada todavía).
+model CursadaMateria {
+  id        String   @id @default(uuid())
+  alumnoId  String
+  materiaId String
+  anio      Int
+  createdAt DateTime @default(now())
+  alumno    Alumno   @relation(fields: [alumnoId], references: [id])
+  materia   Materia  @relation(fields: [materiaId], references: [id])
+
+  @@unique([alumnoId, materiaId, anio])
 }

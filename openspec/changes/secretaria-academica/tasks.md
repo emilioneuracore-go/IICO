@@ -41,12 +41,12 @@
 
 ## 6. Actas de examen (`secretaria-academica/actas-examen`)
 
-- [ ] 6.1 Modelar en Prisma Libro de Actas, Acta y Calificación por alumno, y verificar con migración aplicada
-- [ ] 6.2 Implementar alta de acta con materia, fecha, docentes evaluadores y alumnos inscriptos, y verificar con un test la creación completa
-- [ ] 6.3 Implementar la determinación de alcance del acta (tramo o ciclo completo) según la modalidad de acreditación de la materia, y verificar con tests ambos casos, incluyendo el rechazo de un acta de ciclo completo si faltan años por cursar
-- [ ] 6.4 Implementar carga de calificación por alumno y el cálculo de aprobado/desaprobado, y verificar con tests ambos casos (nota igual/superior y nota inferior a la mínima)
-- [ ] 6.5 Implementar el cierre de acta y bloquear la edición directa de un acta cerrada, y verificar con un test que la edición directa post-cierre es rechazada
-- [ ] 6.6 Implementar consulta de historial de actas por alumno y por materia, y verificar con un test que devuelve las actas correctas
+- [x] 6.1 Modelar en Prisma Libro de Actas, Acta y Calificación por alumno, y verificar con migración aplicada
+- [x] 6.2 Implementar alta de acta con materia, fecha, docentes evaluadores y alumnos inscriptos, y verificar con un test la creación completa
+- [x] 6.3 Implementar la determinación de alcance del acta (tramo o ciclo completo) según la modalidad de acreditación de la materia, y verificar con tests ambos casos, incluyendo el rechazo de un acta de ciclo completo si faltan años por cursar
+- [x] 6.4 Implementar carga de calificación por alumno y el cálculo de aprobado/desaprobado, y verificar con tests ambos casos (nota igual/superior y nota inferior a la mínima)
+- [x] 6.5 Implementar el cierre de acta y bloquear la edición directa de un acta cerrada, y verificar con un test que la edición directa post-cierre es rechazada
+- [x] 6.6 Implementar consulta de historial de actas por alumno y por materia, y verificar con un test que devuelve las actas correctas
 
 ## 7. Materias previas (`secretaria-academica/materias-previas`)
 
