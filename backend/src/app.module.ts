@@ -5,6 +5,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { IdentityModule } from './identity/identity.module';
 import { MateriasModule } from './secretaria-academica/materias/materias.module';
 import { LegajosAlumnosModule } from './secretaria-academica/legajos-alumnos/legajos-alumnos.module';
+import { LibroMatrizModule } from './secretaria-academica/libro-matriz/libro-matriz.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { LegajosAlumnosModule } from './secretaria-academica/legajos-alumnos/leg
     IdentityModule,
     MateriasModule,
     LegajosAlumnosModule,
+    LibroMatrizModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -141,6 +141,7 @@ model Alumno {
   createdAt       DateTime             @default(now())
   responsables    AlumnoResponsable[]
   historial       LegajoHistorialCambio[]
+  inscripcionesLibroMatriz InscripcionLibroMatriz[]
 }
 
 model Responsable {
@@ -171,4 +172,26 @@ model LegajoHistorialCambio {
   valorNuevo    String?
   fecha         DateTime @default(now())
   alumno        Alumno   @relation(fields: [alumnoId], references: [id], onDelete: Cascade)
+}
+
+// ---------------------------------------------------------------------------
+// secretaria-academica/libro-matriz
+// ---------------------------------------------------------------------------
+
+model InscripcionLibroMatriz {
+  id                  String   @id @default(uuid())
+  libro               String
+  anio                Int
+  numeroCorrelativo   Int
+  alumnoId            String
+  activa              Boolean  @default(true)
+  // Solo tiene valor "{alumnoId}:{anio}" mientras la inscripción está activa;
+  // se pone en null al desactivarla. El índice único solo choca entre dos
+  // inscripciones activas del mismo alumno en el mismo período (NULL no
+  // colisiona en un índice único de PostgreSQL).
+  claveUnicidadActiva String?  @unique
+  createdAt           DateTime @default(now())
+  alumno              Alumno   @relation(fields: [alumnoId], references: [id])
+
+  @@unique([libro, anio, numeroCorrelativo])
 }

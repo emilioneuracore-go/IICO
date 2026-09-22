@@ -34,10 +34,10 @@
 
 ## 5. Libro matriz (`secretaria-academica/libro-matriz`)
 
-- [ ] 5.1 Modelar en Prisma la entidad Inscripción de Libro Matriz (libro, año, número correlativo, alumno) y verificar con migración aplicada
-- [ ] 5.2 Implementar asignación automática de número correlativo por libro/año y verificar con un test que inscripciones sucesivas reciben números consecutivos
-- [ ] 5.3 Implementar la restricción de unicidad de inscripción activa por período y verificar con un test que una segunda inscripción en el mismo período es rechazada
-- [ ] 5.4 Implementar consulta de inscripciones filtrando por año/libro y verificar con un test que devuelve el listado esperado
+- [x] 5.1 Modelar en Prisma la entidad Inscripción de Libro Matriz (libro, año, número correlativo, alumno) y verificar con migración aplicada
+- [x] 5.2 Implementar asignación automática de número correlativo por libro/año y verificar con un test que inscripciones sucesivas reciben números consecutivos
+- [x] 5.3 Implementar la restricción de unicidad de inscripción activa por período y verificar con un test que una segunda inscripción en el mismo período es rechazada
+- [x] 5.4 Implementar consulta de inscripciones filtrando por año/libro y verificar con un test que devuelve el listado esperado
 
 ## 6. Actas de examen (`secretaria-academica/actas-examen`)
 
